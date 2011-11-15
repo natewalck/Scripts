@@ -2,6 +2,8 @@
 # To use this script, simple type ./removeDeprecatedProducts BRANCH_NAME to remove
 # all deprecated products from the specified branch.
 
+# Place this script in the same folder as repoutil, otherwise it will not work properly.
+
 # Sanity Check.  Makes sure a branch is specified.
 if [ -z $1 ]
 then
