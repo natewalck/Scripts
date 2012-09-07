@@ -1,6 +1,10 @@
 #!/usr/bin/python
 # Scriptrunner will run all scripts within a folder that you specify.
 # Useful for LaunchAgents and running multiple scripts at user login. 
+# Thanks to Greg Neagle for an example of how to do this
+
+# Todo: Add permissions checking so dubious scripts do not run
+# Todo: Add check to make sure that scripts directory exists
 
 import optparse 
 import os
