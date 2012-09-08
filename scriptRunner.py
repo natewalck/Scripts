@@ -26,13 +26,10 @@ def main():
     options, arguments = p.parse_args()
 
     # Check to see if passed options are a directory or not
-    if options.runEvery is not None:
-        if not os.path.isdir(options.runEvery): 
-            sys.exit(options.runEvery + "is not a directory")
-
-    if options.runOnce is not None:
-        if not os.path.isdir(options.runOnce): 
-            sys.exit(options.runOnce + "is not a directory")
+    for parameter, value in options.__dict__.items():
+        if value is not None:
+            if not os.path.isdir(value): 
+                sys.exit(value + "is not a directory")
 
     runEveryPath = options.runEvery
     runOncePath = options.runOnce
