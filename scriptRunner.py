@@ -33,7 +33,6 @@ def main():
     try:
         runOncePlistValues=plistlib.readPlist(runOncePlist)
     except IOError:
-        print "File does not exist"
         runOncePlistValues = {}
 
     for parameter, value in options.__dict__.items():
@@ -54,9 +53,10 @@ def main():
                         runOncePlistValues[file] = datetime.datetime.now().isoformat()
                     else:
                         print file + " is not executable or has bad permissions"
+        plistlib.writePlist(runOncePlistValues, runOncePlist)
 
 
-    plistlib.writePlist(runOncePlistValues, runOncePlist) 
+     
 
 if __name__ == '__main__':
     main()
