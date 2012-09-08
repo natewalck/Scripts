@@ -30,9 +30,7 @@ def main():
         if value is not None:
             if not os.path.isdir(value): 
                 sys.exit(value + "is not a directory")
-
-    runEveryPath = options.runEvery
-    runOncePath = options.runOnce
+ 
     runOncePlist = os.path.expanduser("~/Library/Preferences/") + "com.company.scriptrunner.plist"
 
     try:
@@ -40,28 +38,26 @@ def main():
     except IOError:
         print "File does not exist"
         runOncePlistValues = {}
-    except:
-        print "Something has gone terribly wrong."
-        raise
 
-    if runEveryPath is not None: 
-        for file in os.listdir(runEveryPath):
-            if os.access(os.path.join(runEveryPath, file), os.X_OK):
-                subprocess.call(os.path.join(runEveryPath,file), stdin=None, stdout=None, stderr=None)
-            else:
-                print file + " is not executable"
-                    
-    # If runOnce is set, make sure script has not been run before and run it.
-    if runOncePath is not None:
-        for file in os.listdir(runOncePath):
-            if file in runOncePlistValues:
-                print os.path.join(runOncePath, file) + " already run!"
-            else:
-                if os.access(os.path.join(runOncePath, file), os.X_OK):
-                    subprocess.call(os.path.join(runOncePath,file), stdin=None, stdout=None, stderr=None)
-                    runOncePlistValues[file] = datetime.datetime.now().isoformat()
+    for parameter, value in options.__dict__.items():
+        if parameter == 'runEvery' and value is not None:
+            for file in os.listdir(value):
+                if os.access(os.path.join(value, file), os.X_OK):
+                    subprocess.call(os.path.join(value ,file), stdin=None, stdout=None, stderr=None)
                 else:
                     print file + " is not executable"
+
+        elif parameter == 'runOnce' and value is not None:
+            for file in os.listdir(value):
+                if file in runOncePlistValues:
+                    print os.path.join(value, file) + " already run!"
+                else:
+                    if os.access(os.path.join(value, file), os.X_OK):
+                        subprocess.call(os.path.join(value ,file), stdin=None, stdout=None, stderr=None)
+                        runOncePlistValues[file] = datetime.datetime.now().isoformat()
+                    else:
+                        print file + " is not executable"
+
 
     plistlib.writePlist(runOncePlistValues, runOncePlist) 
 
