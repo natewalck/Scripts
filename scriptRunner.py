@@ -3,9 +3,6 @@
 # Useful for LaunchAgents and running multiple scripts at user login. 
 # Thanks to Greg Neagle for an example of how to do this
 
-# Todo: Add permissions checking so dubious scripts do not run
-# Todo: Add check to make sure that scripts directory exists
-
 import optparse 
 import os
 import subprocess
@@ -42,21 +39,21 @@ def main():
     for parameter, value in options.__dict__.items():
         if parameter == 'runEvery' and value is not None:
             for file in os.listdir(value):
-                if os.access(os.path.join(value, file), os.X_OK):
+                if os.access(os.path.join(value, file), os.X_OK) and (os.stat(os.path.join(value, file)).st_mode & 0777) == 0755:
                     subprocess.call(os.path.join(value ,file), stdin=None, stdout=None, stderr=None)
                 else:
-                    print file + " is not executable"
+                    print file + " is not executable or has bad permissions"
 
         elif parameter == 'runOnce' and value is not None:
             for file in os.listdir(value):
                 if file in runOncePlistValues:
                     print os.path.join(value, file) + " already run!"
                 else:
-                    if os.access(os.path.join(value, file), os.X_OK):
+                    if os.access(os.path.join(value, file), os.X_OK) and (os.stat(os.path.join(value, file)).st_mode & 0777) == 0755:
                         subprocess.call(os.path.join(value ,file), stdin=None, stdout=None, stderr=None)
                         runOncePlistValues[file] = datetime.datetime.now().isoformat()
                     else:
-                        print file + " is not executable"
+                        print file + " is not executable or has bad permissions"
 
 
     plistlib.writePlist(runOncePlistValues, runOncePlist) 
