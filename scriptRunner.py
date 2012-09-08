@@ -44,6 +44,7 @@ def main():
                     print file + " is not executable or has bad permissions"
 
         elif parameter == 'runOnce' and value is not None:
+
             for file in os.listdir(value):
                 if file in runOncePlistValues:
                     print os.path.join(value, file) + " already run!"
@@ -53,7 +54,7 @@ def main():
                         runOncePlistValues[file] = datetime.datetime.now().isoformat()
                     else:
                         print file + " is not executable or has bad permissions"
-        plistlib.writePlist(runOncePlistValues, runOncePlist)
+            plistlib.writePlist(runOncePlistValues, runOncePlist)
 
 
      
