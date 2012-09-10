@@ -1,15 +1,16 @@
 #!/usr/bin/python
 # scriptRunner will run all scripts within a folder that you specify.
-# Useful for LaunchAgents and running multiple scripts at user login. 
+# Useful for LaunchAgents and running multiple scripts at user login.
 # Thanks to Greg Neagle for an example of how to do this
 
-import optparse 
+import optparse
 import os
 import subprocess
 import plistlib
 import datetime
 import sys
 import stat
+
 
 def main():
     """Main"""
@@ -26,9 +27,9 @@ def main():
     # Check to see if passed options are a directory or not
     for path in (options.runOnce, options.runEvery):
         if path is not None:
-            if not os.path.isdir(path): 
+            if not os.path.isdir(path):
                 sys.exit(path + " is not a directory")
- 
+
     runOncePlist = os.path.expanduser("~/Library/Preferences/") + "com.company.scriptrunner.plist"
 
     try:
@@ -58,7 +59,7 @@ def main():
                 if not mode & stat.S_IWOTH:
                     try:
                         subprocess.call(os.path.join(options.runOnce ,script), stdin=None, stdout=None, stderr=None)
-                        runOncePlistValues[script] = datetime.datetime.now() 
+                        runOncePlistValues[script] = datetime.datetime.now()
                     except OSError:
                         print "Uh oh"
                 else:
@@ -66,7 +67,7 @@ def main():
         plistlib.writePlist(runOncePlistValues, runOncePlist)
 
 
-     
+
 
 if __name__ == '__main__':
     main()
