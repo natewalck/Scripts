@@ -43,7 +43,7 @@ def main():
             mode = st.st_mode
             if not mode & stat.S_IWOTH:
                 try:
-                    subprocess.call(os.path.join(options.runEvery ,script), stdin=None, stdout=None, stderr=None)
+                    subprocess.call(os.path.join(options.runEvery, script), stdin=None)
                 except OSError:
                     print "Something went wrong!"
             else:
@@ -58,7 +58,7 @@ def main():
                 mode = st.st_mode
                 if not mode & stat.S_IWOTH:
                     try:
-                        subprocess.call(os.path.join(options.runOnce ,script), stdin=None, stdout=None, stderr=None)
+                        subprocess.call(os.path.join(options.runOnce, script), stdin=None)
                         runOncePlistValues[script] = datetime.datetime.now()
                     except OSError:
                         print "Uh oh"
