@@ -19,6 +19,7 @@
 
 require 'getoptlong'
 require 'rdoc/usage'
+require 'osx/cocoa'
 
 opts = GetoptLong.new(
   [ '--help', '-h', GetoptLong::NO_ARGUMENT ],
@@ -56,5 +57,34 @@ opts.each do |opt, arg|
   end
 end
 
-puts runOnce
-puts runEvery
+runOncePlist = File.expand_path("~/Library/Preferences/" + "com.company.scriptrunner2.plist") 
+plist = OSX::NSMutableDictionary.dictionaryWithContentsOfFile(runOncePlist)
+if plist == nil then
+  plist = OSX::NSMutableDictionary.alloc.init 
+end
+
+if runEvery then
+  Dir.foreach(runEvery) do |script|
+    next if script == '.' or script == '..'
+    scriptPath = File.join(runEvery, script)
+    if [2, 3, 6 ,7].include?(Integer(sprintf("%o", File.stat(scriptPath).mode)[-1,1]))
+      puts "#{scriptPath} has dubious permissions"
+    elsif !File.executable?(scriptPath)
+      puts "#{scriptPath} is not executable"
+    else
+      system(scriptPath)
+    end
+  end
+end
+
+if runOnce then
+  #puts "Has a value"
+end
+
+
+
+
+
+#plist['blah'] = "bleh"
+#plist.writeToFile_atomically(runOncePlist,true)
+
