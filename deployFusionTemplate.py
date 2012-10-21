@@ -9,11 +9,17 @@ import re
 p = optparse.OptionParser()
 p.set_usage("""Usage: %prog [options]""")
 p.add_option('--template', '-t', dest='template',
-             help="""Template to deploy.""")
+             help="""Path to template you wish to deploy.""")
 p.add_option('--output', '-o', dest='output',
-             help="""Name of Virtual Machine you are deploying the template to.""")
+             help="""Path and name you would like to deploy the template to.""")
 
 options, arguments = p.parse_args()
+
+if not options.template:
+    p.error('You must supply a VM to use as a template')
+
+if not options.output:
+    p.error('You must supply an output location and name')
 
 
 templateName = os.path.splitext(os.path.basename(options.template))[0]
