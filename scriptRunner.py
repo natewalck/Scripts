@@ -30,7 +30,8 @@ def main():
             if not os.path.isdir(path):
                 sys.exit(path + " is not a directory")
 
-    runOncePlist = os.path.expanduser("~/Library/Preferences/") + "com.company.scriptrunner.plist"
+    runOncePlist = os.path.expanduser("~/Library/Preferences/") +\
+        "com.company.scriptrunner.plist"
 
     try:
         runOncePlistValues = plistlib.readPlist(runOncePlist)
@@ -43,7 +44,8 @@ def main():
             mode = st.st_mode
             if not mode & stat.S_IWOTH:
                 try:
-                    subprocess.call(os.path.join(options.runEvery, script), stdin=None)
+                    subprocess.call(os.path.join(options.runEvery, script),
+                                    stdin=None)
                 except OSError:
                     print "Something went wrong!"
             else:
@@ -58,7 +60,8 @@ def main():
                 mode = st.st_mode
                 if not mode & stat.S_IWOTH:
                     try:
-                        subprocess.call(os.path.join(options.runOnce, script), stdin=None)
+                        subprocess.call(os.path.join(options.runOnce, script),
+                                        stdin=None)
                         runOncePlistValues[script] = datetime.datetime.now()
                     except OSError:
                         print "Uh oh"
