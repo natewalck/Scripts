@@ -18,9 +18,9 @@ def main():
     p = optparse.OptionParser()
     p.set_usage("""Usage: %prog [options]""")
     p.add_option('--once', '-o', dest='runOnce',
-                    help="""Directory of scripts to run only once.""")
+                 help="""Directory of scripts to run only once.""")
     p.add_option('--every', '-e', dest='runEvery',
-                    help="""Directory of scripts to run every time.""")
+                 help="""Directory of scripts to run every time.""")
 
     options, arguments = p.parse_args()
 
@@ -65,8 +65,6 @@ def main():
                 else:
                     print script + " is not executable or has bad permissions"
         plistlib.writePlist(runOncePlistValues, runOncePlist)
-
-
 
 
 if __name__ == '__main__':
