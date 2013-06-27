@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+# The Following bits were borrowed from Greg Neagle's FoundationPlist:
+# https://code.google.com/p/munki/source/browse/code/client/munkilib/FoundationPlist.py
+
 from Foundation import NSData, \
                        NSPropertyListSerialization, \
                        NSPropertyListMutableContainers, \
