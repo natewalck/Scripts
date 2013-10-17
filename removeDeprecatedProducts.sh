@@ -18,4 +18,4 @@ for item in $(./repoutil --list-branch=${1} | awk '/Deprecated/{ print $1 }'); d
 done
 
 # Removes deprecated products
-./repoutil --remove-products="${deprecatedProducts[*]}" $1
+./repoutil --remove-products=${deprecatedProducts[*]} $1
