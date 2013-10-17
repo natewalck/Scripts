@@ -13,7 +13,7 @@ fi
 
 # Iterates through the output that shows deprecated items in a given branch.
 i=0
-for item in $(./repoutil --list-branch=${1} | grep Deprecated | cut -f1 -d ' ')
+for item in $(./repoutil --list-branch=${1} | awk '/Deprecated/{ print $1 }')
 do
         deprecatedProducts[$i]=$item
         let i++
