@@ -5,7 +5,7 @@
 # Place this script in the same folder as repoutil, otherwise it will not work properly.
 
 # Sanity Check.  Makes sure a branch is specified.
-if [ -z $1 ]
+if [[ -z $1 ]]
 then
     echo "Please specify a branch"
     exit 1
