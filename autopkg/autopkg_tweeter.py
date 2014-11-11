@@ -9,9 +9,11 @@ import logging
 app_versions = os.path.expanduser('~/Library/AutoPkg/app_versions.plist')
 autopkg_report = os.path.expanduser('~/Library/AutoPkg/autopkg_report.plist')
 recipe_list = os.path.expanduser('~/Library/AutoPkg/recipe_list.txt')
+log_directory = os.path.expanduser('~/Library/AutoPkg/autopkg_tweeter.log')
+
 twitter_account_name = 'autopkgsays'
 
-logging.basicConfig(format='%(asctime)s %(message)s', filename='/var/log/autopkg_tweeter.log', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s %(message)s', filename=log_directory, level=logging.DEBUG)
 
 def load_app_keys():
     """Load app keys from a file on disk"""
