@@ -75,7 +75,7 @@ def tweet(app_name, version):
     twitter_instance = twitter.Twitter(auth=twitter.OAuth(
         oauth_token, oauth_secret, CONSUMER_KEY, CONSUMER_SECRET))
     # Now work with Twitter
-    twitter_instance.statuses.update(status="%s version %s has been released" % (app_name, version))
+    twitter_instance.statuses.update(status="%s %s has been released" % (app_name, version))
 
 
 def tweet_if_new(app_name, version):
