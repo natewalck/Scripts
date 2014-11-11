@@ -68,30 +68,34 @@ def tweet(app_name, version):
     twitter_instance.statuses.update(status="%s version %s has been released" % (app_name, version))
 
 def main():
-    app_name = env["app_name"]
-    version = env["version"]
+    autopkg_results = load_autopkg_results()
+    for key in autopkg_results:
+        print key[4]['Output']['munki_info']['name']
 
-    previous_version = get_previous_app_version(app_name)
+    # app_name = env["app_name"]
+    # version = env["version"]
 
-    if previous_version:
-        if version > previous_version:
-            output("%s is newer than %s, saving version and sending tweet" % (app_name, version))
-            store_app_version(app_name, version)
-            try:
-                tweet(app_name, version)
-                output("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
-            except:
-                output("Duplicate Tweet or Failed for another reason")
-        else:
-            output("%s is not newer than %s" % (version, previous_version))
-    else:
-        output("%s is newer than %s, saving version and sending tweet" % (app_name, version))
-        store_app_version(app_name, version)
-        try:
-            tweet(app_name, version)
-            output("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
-        except:
-            output("Duplicate Tweet or Failed for another reason")
+    # previous_version = get_previous_app_version(app_name)
+
+    # if previous_version:
+    #     if version > previous_version:
+    #         output("%s is newer than %s, saving version and sending tweet" % (app_name, version))
+    #         store_app_version(app_name, version)
+    #         try:
+    #             tweet(app_name, version)
+    #             output("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
+    #         except:
+    #             output("Duplicate Tweet or Failed for another reason")
+    #     else:
+    #         output("%s is not newer than %s" % (version, previous_version))
+    # else:
+    #     output("%s is newer than %s, saving version and sending tweet" % (app_name, version))
+    #     store_app_version(app_name, version)
+    #     try:
+    #         tweet(app_name, version)
+    #         output("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
+    #     except:
+    #         output("Duplicate Tweet or Failed for another reason")
 
 
 if __name__ == "__main__":
