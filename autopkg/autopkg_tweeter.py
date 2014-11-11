@@ -3,9 +3,11 @@
 import os
 import twitter
 import plistlib
+import subprocess
 
 app_versions = os.path.expanduser('~/Library/AutoPkg/app_versions.plist')
-autopkg_results = os.path.expanduser('~/Library/AutoPkg/Cache/autopkg_results.plist')
+autopkg_report = os.path.expanduser('~/Library/AutoPkg/autopkg_report.plist')
+recipe_list = os.path.expanduser('~/Library/AutoPkg/recipe_list.txt')
 twitter_account_name = 'autopkgsays'
 
 
@@ -28,17 +30,17 @@ def load_app_versions():
 
 
 def load_autopkg_results():
-    if os.path.isfile(autopkg_results):
-        versions = plistlib.readPlist(autopkg_results)
+    if os.path.isfile(autopkg_report):
+        report_data = plistlib.readPlist(autopkg_report)
     else:
-        versions = None
+        report_data = None
 
-    return versions
+    return report_data
 
 
 def get_previous_app_version(app_name):
     app_history = load_app_versions()
-    if app_history and app_history[app_name]:
+    if app_history and app_name in app_history:
         return app_history[app_name]
     else:
         return False
@@ -54,6 +56,14 @@ def store_app_version(app_name, version):
         plistlib.writePlist(app_history, app_versions)
 
 
+def run_autopkg():
+    cmd = ['/usr/local/bin/autopkg', 'run', '--recipe-list', recipe_list, '--report-plist=' + autopkg_report]
+    string_cmd = " ".join(cmd)
+    proc = subprocess.Popen(string_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    (output, error_output) = proc.communicate()
+    return output.strip()
+
+
 def tweet(app_name, version):
     MY_TWITTER_CREDS = os.path.expanduser('~/.twitter_oauth')
     CONSUMER_KEY, CONSUMER_SECRET = load_app_keys()
@@ -67,35 +77,41 @@ def tweet(app_name, version):
     # Now work with Twitter
     twitter_instance.statuses.update(status="%s version %s has been released" % (app_name, version))
 
+
+def tweet_if_new(app_name, version):
+    previous_version = get_previous_app_version(app_name)
+
+    if previous_version:
+        if version > previous_version:
+            print("%s is newer than %s, saving version and sending tweet" % (app_name, version))
+            store_app_version(app_name, version)
+            try:
+                tweet(app_name, version)
+                print("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
+            except:
+                print("Duplicate Tweet or Failed for another reason")
+        else:
+            print("%s is not newer than %s" % (version, previous_version))
+    else:
+        print("%s is newer than %s, saving version and sending tweet" % (app_name, version))
+        store_app_version(app_name, version)
+        try:
+            tweet(app_name, version)
+            print("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
+        except:
+            print("Duplicate Tweet or Failed for another reason")
+
 def main():
+    autopkg_run_results = run_autopkg()
     autopkg_results = load_autopkg_results()
-    for key in autopkg_results:
-        print key[4]['Output']['munki_info']['name']
+    autopkg_run = {}
+    for item in autopkg_results['new_imports']:
+        autopkg_run.update({item['name']:item['version']})
 
-    # app_name = env["app_name"]
-    # version = env["version"]
-
-    # previous_version = get_previous_app_version(app_name)
-
-    # if previous_version:
-    #     if version > previous_version:
-    #         output("%s is newer than %s, saving version and sending tweet" % (app_name, version))
-    #         store_app_version(app_name, version)
-    #         try:
-    #             tweet(app_name, version)
-    #             output("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
-    #         except:
-    #             output("Duplicate Tweet or Failed for another reason")
-    #     else:
-    #         output("%s is not newer than %s" % (version, previous_version))
-    # else:
-    #     output("%s is newer than %s, saving version and sending tweet" % (app_name, version))
-    #     store_app_version(app_name, version)
-    #     try:
-    #         tweet(app_name, version)
-    #         output("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
-    #     except:
-    #         output("Duplicate Tweet or Failed for another reason")
+    for app in autopkg_run:
+        print app
+        print autopkg_run[app]
+        tweet_if_new(app, autopkg_run[app])
 
 
 if __name__ == "__main__":
