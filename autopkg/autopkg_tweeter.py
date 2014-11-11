@@ -87,21 +87,21 @@ def tweet_if_new(app_name, version):
 
     if previous_version:
         if version > previous_version:
-            logging.info("%s is newer than %s, saving version and sending tweet" % (app_name, version))
+            logging.info("%s is newer than %s, saving version and sending tweet" % (version, previous_version))
             store_app_version(app_name, version)
             try:
                 tweet(app_name, version)
-                logging.info("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
+                logging.info("Tweeted %s has been updated to %s" % (app_name, version))
             except:
                 logging.info("Duplicate Tweet or Failed for another reason")
         else:
             logging.info("%s is not newer than %s" % (version, previous_version))
     else:
-        logging.info("%s is newer than %s, saving version and sending tweet" % (app_name, version))
+        logging.info("%s is newer than %s, saving version and sending tweet" % (version, previous_version))
         store_app_version(app_name, version)
         try:
             tweet(app_name, version)
-            logging.info("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
+            logging.info("Tweeted %s has been updated to %s" % (app_name, version))
         except:
             logging.info("Duplicate Tweet or Failed for another reason")
 
