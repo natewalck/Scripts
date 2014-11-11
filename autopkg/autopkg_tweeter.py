@@ -5,6 +5,7 @@ import twitter
 import plistlib
 
 app_versions = os.path.expanduser('~/Library/AutoPkg/app_versions.plist')
+autopkg_results = os.path.expanduser('~/Library/AutoPkg/Cache/autopkg_results.plist')
 twitter_account_name = 'autopkgsays'
 
 
@@ -20,6 +21,15 @@ def load_app_keys():
 def load_app_versions():
     if os.path.isfile(app_versions):
         versions = plistlib.readPlist(app_versions)
+    else:
+        versions = None
+
+    return versions
+
+
+def load_autopkg_results():
+    if os.path.isfile(autopkg_results):
+        versions = plistlib.readPlist(autopkg_results)
     else:
         versions = None
 
