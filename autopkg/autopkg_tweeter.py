@@ -4,12 +4,14 @@ import os
 import twitter
 import plistlib
 import subprocess
+import logging
 
 app_versions = os.path.expanduser('~/Library/AutoPkg/app_versions.plist')
 autopkg_report = os.path.expanduser('~/Library/AutoPkg/autopkg_report.plist')
 recipe_list = os.path.expanduser('~/Library/AutoPkg/recipe_list.txt')
 twitter_account_name = 'autopkgsays'
 
+logging.basicConfig(format='%(asctime)s %(message)s', filename='/var/log/autopkg_tweeter.log', level=logging.DEBUG)
 
 def load_app_keys():
     """Load app keys from a file on disk"""
@@ -83,25 +85,26 @@ def tweet_if_new(app_name, version):
 
     if previous_version:
         if version > previous_version:
-            print("%s is newer than %s, saving version and sending tweet" % (app_name, version))
+            logging.info("%s is newer than %s, saving version and sending tweet" % (app_name, version))
             store_app_version(app_name, version)
             try:
                 tweet(app_name, version)
-                print("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
+                logging.info("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
             except:
-                print("Duplicate Tweet or Failed for another reason")
+                logging.info("Duplicate Tweet or Failed for another reason")
         else:
-            print("%s is not newer than %s" % (version, previous_version))
+            logging.info("%s is not newer than %s" % (version, previous_version))
     else:
-        print("%s is newer than %s, saving version and sending tweet" % (app_name, version))
+        logging.info("%s is newer than %s, saving version and sending tweet" % (app_name, version))
         store_app_version(app_name, version)
         try:
             tweet(app_name, version)
-            print("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
+            logging.info("Tweeted %s has been updated to %s" % (env["app_name"], env["version"]))
         except:
-            print("Duplicate Tweet or Failed for another reason")
+            logging.info("Duplicate Tweet or Failed for another reason")
 
 def main():
+    logging.info("Running AutoPkg Tweeter...")
     autopkg_run_results = run_autopkg()
     autopkg_results = load_autopkg_results()
     autopkg_run = {}
@@ -109,8 +112,6 @@ def main():
         autopkg_run.update({item['name']:item['version']})
 
     for app in autopkg_run:
-        print app
-        print autopkg_run[app]
         tweet_if_new(app, autopkg_run[app])
 
 
